@@ -25,6 +25,8 @@
               (event.type == "ADDED" or event.type == "MODIFIED")
               and
               event.resource.kind == "Deployment"
+              and
+              event.spec.volumes is selectattr("persistentVolumeClaim.claimName", "==", events.pvc.metadata.name)
             )
       action:
         debug:
