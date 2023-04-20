@@ -33,7 +33,7 @@
       action:
         debug:
           msg:
-            - BEGIN
+            - BEGIN *** Fix the PersistentVolumeClaim Pod PENDING ***
             - pvc
             - "{{ events.pvc }}"
             - pod

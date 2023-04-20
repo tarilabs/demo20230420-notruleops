@@ -14,7 +14,14 @@ Docker
 minikube start
 ```
 
-# FixthePersistentVolumeClaim.rulebook
+# FixthePersistentVolumeClaim
+
+```sh
+ansible-rulebook -i inventory.yml --rulebook demo1.rulebook.yml
+# in the other terminal
+kubectl apply -f k8s/pv-claim.yml && kubectl apply -f k8s/pvc-deployment.yml
+kubectl delete -f k8s/pv-claim.yml && kubectl delete -f k8s/pvc-deployment.yml
+```
 
 # Investigation "limitations" found
 
