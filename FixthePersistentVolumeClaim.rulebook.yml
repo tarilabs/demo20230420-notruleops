@@ -5,14 +5,33 @@
         api_version: v1
         kind: PersistentVolumeClaim
         namespace: default
+    - sabre1041.eda.k8s:
+        api_version: v1
+        kind: Deployment
+        namespace: default
   rules:
     # see !Note sidebar in https://ansible-rulebook.readthedocs.io/en/stable/conditions.html#multiple-conditions-where-all-of-them-have-to-match
-    - name: Notify
-      condition: |
-        (event.type == "ADDED" or event.type == "MODIFIED")
-        and
-        event.resource.kind == "PersistentVolumeClaim"
-        and
-        event.resource.status.phase == "Pending"
+    - name: Fix the PersistentVolumeClaim Pod PENDING
+      condition:
+        all:
+          - events.pvc << (
+              (event.type == "ADDED" or event.type == "MODIFIED")
+              and
+              event.resource.kind == "PersistentVolumeClaim"
+              and
+              event.resource.status.phase == "Pending"
+            )
+          - events.pod << (
+              (event.type == "ADDED" or event.type == "MODIFIED")
+              and
+              event.resource.kind == "Deployment"
+            )
       action:
         debug:
+          msg:
+            - BEGIN
+            - pvc
+            - "{{ events.pvc }}"
+            - pod
+            - "{{ events.pod }}"
+            - END
