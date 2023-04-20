@@ -14,19 +14,19 @@
     - name: Fix the PersistentVolumeClaim Pod PENDING
       condition:
         all:
-          - events.pvc << (
+          - |
+            events.pvc << (
               (event.type == "ADDED" or event.type == "MODIFIED")
               and
               event.resource.kind == "PersistentVolumeClaim"
               and
               event.resource.status.phase == "Pending"
             )
-          - events.pod << (
+          - |
+            events.pod << (
               (event.type == "ADDED" or event.type == "MODIFIED")
               and
               event.resource.kind == "Deployment"
-              and
-              event.spec.volumes is selectattr("persistentVolumeClaim.claimName", "==", events.pvc.metadata.name)
             )
       action:
         debug:
