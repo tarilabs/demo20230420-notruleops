@@ -7,7 +7,7 @@
         namespace: default
     - sabre1041.eda.k8s:
         api_version: v1
-        kind: Deployment
+        kind: Pod
         namespace: default
   rules:
     # see !Note sidebar in https://ansible-rulebook.readthedocs.io/en/stable/conditions.html#multiple-conditions-where-all-of-them-have-to-match
@@ -26,7 +26,9 @@
             events.pod << (
               (event.type == "ADDED" or event.type == "MODIFIED")
               and
-              event.resource.kind == "Deployment"
+              event.resource.kind == "Pod"
+              and
+              event.resource.status.phase == "Pending"
             )
       action:
         debug:
