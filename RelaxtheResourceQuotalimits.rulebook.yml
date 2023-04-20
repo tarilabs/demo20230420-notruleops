@@ -1,0 +1,31 @@
+- name: demo1
+  hosts: all
+  sources:
+    - sabre1041.eda.k8s:
+        api_version: v1
+        kind: Deployment
+        namespace: default
+  rules:
+    # see !Note sidebar in https://ansible-rulebook.readthedocs.io/en/stable/conditions.html#multiple-conditions-where-all-of-them-have-to-match
+    - name: Relax the ResourceQuota limits Deployment PENDING
+      condition:
+        all:
+          - |
+            events.d << (
+              (event.type == "ADDED" or event.type == "MODIFIED")
+              and
+              event.resource.kind == "Deployment"
+              and
+              event.resource.status.conditions is selectattr("type", "==", "Available")
+              and
+              event.resource.status.conditions is selectattr("status", "==", "False")
+              and
+              event.resource.status.conditions is selectattr("message", "search", "exceeded quota")
+            )
+      action:
+        debug:
+          msg:
+            - BEGIN *** Relax the ResourceQuota limits Deployment PENDING ***
+            - d
+            - "{{ events.d }}"
+            - END
