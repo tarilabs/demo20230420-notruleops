@@ -16,8 +16,10 @@ minikube start
 
 # Relax the ResourceQuota limits Deployment PENDING
 
+NOTE: semantically different
+
 ```sh
-ansible-rulebook -i inventory.yml --rulebook demo1.rulebook.yml
+clear && ansible-rulebook -i inventory.yml --rulebook RelaxtheResourceQuotalimits.rulebook.yml
 # in the other terminal
 kubectl apply -f k8s/quota-pod.yml && kubectl apply -f k8s/quota-pod-deployment.yml
 kubectl delete -f k8s/quota-pod.yml && kubectl delete -f k8s/quota-pod-deployment.yml
@@ -25,8 +27,10 @@ kubectl delete -f k8s/quota-pod.yml && kubectl delete -f k8s/quota-pod-deploymen
 
 # FixthePersistentVolumeClaim
 
+NOTE: incomplete
+
 ```sh
-ansible-rulebook -i inventory.yml --rulebook demo1.rulebook.yml
+clear && ansible-rulebook -i inventory.yml --rulebook FixthePersistentVolumeClaim.rulebook.yml
 # in the other terminal
 kubectl apply -f k8s/pv-claim.yml && kubectl apply -f k8s/pvc-deployment.yml
 kubectl delete -f k8s/pv-claim.yml && kubectl delete -f k8s/pvc-deployment.yml

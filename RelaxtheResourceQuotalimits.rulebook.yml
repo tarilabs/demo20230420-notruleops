@@ -22,6 +22,9 @@
               and
               event.resource.status.conditions is selectattr("message", "search", "exceeded quota")
             )
+      throttle:
+        once_within: 30 seconds
+        group_by_attributes: []
       action:
         debug:
           msg:
