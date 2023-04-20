@@ -38,8 +38,8 @@ kubectl delete -f k8s/pv-claim.yml && kubectl delete -f k8s/pvc-deployment.yml
 
 # Investigation "limitations" found
 
-- No way to trigger a level-trigger update
-- No "live reload" ?
+- No way to trigger a level-trigger update (manually trigger k8s API invocation for the specified resources)
+- No "live reload" of the rulebook resource?
 - `kubectl delete -f` triggers a MODIFIED event (before a DELETED event)
 - cannot define variable with dollar prefix `events.$pvc << ...`
 - the following in the doc, does not run (fail yaml schema validation, had to use either `msg` or `var`) https://ansible-rulebook.readthedocs.io/en/stable/conditions.html#:~:text=action%3A%0A%20%20debug%3A%0A%20%20%20%20first%3A%20%22%7B%7B%20events.first%20%7D%7D%22
