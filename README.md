@@ -77,7 +77,7 @@ tried with
 but not working (`Expected end of text, found '<'  (at char 11), (line:1, col:12)`).
 Also, not sure event the dot in the property accessor (first param I need access the `claimName` inside of `persistentVolumeClaim` composite attribute of `volumes` in the `Pod`).
 
-- No rule analysis wrong.<br/>
+- No rule analysis that I writted something wrong "before" runtime.<br/>
 Defining a condition such as:
 ```yaml
       condition:
@@ -133,3 +133,8 @@ but in rulebook format is not grouped "for the same Object in collection"
               event.resource.status.conditions is selectattr("message", "search", "exceeded quota")
             )
 ```
+
+- the `event.resource.status.conditions is selectattr("type", "==", "Available")` is not Drools indexed, because of using the `selectattr`.
+- the dot accessor in `selectattr` is allegedly not working as intended _even when hardcoding the right operand_.<br/>
+see screenshot: ![](Screenshot%202023-04-26%20at%2014.08.03.png)
+- (to be continued...)

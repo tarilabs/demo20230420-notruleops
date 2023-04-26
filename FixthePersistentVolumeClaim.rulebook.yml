@@ -29,7 +29,19 @@
               event.resource.kind == "Pod"
               and
               event.resource.status.phase == "Pending"
+              and
+              event.spec.volumes is selectattr("persistentVolumeClaim.claimName", "==", "task-pv-claim")
             )
+        # does not work using the below because of the join with events.pvc.metadata.name
+        #     and
+        #     event.spec.volumes is selectattr("persistentVolumeClaim.claimName", "==", events.pvc.metadata.name)
+        #   )
+        # it is also to be noted the "persistentVolumeClaim.claimName" should be working internally,
+        # but for some reasons that did not work for me even when hardcoding as:
+        #     and
+        #     event.spec.volumes is selectattr("persistentVolumeClaim.claimName", "==", "task-pv-claim")
+        #   )
+        # refer to screenshot in readme for proof :/
       action:
         debug:
           msg:

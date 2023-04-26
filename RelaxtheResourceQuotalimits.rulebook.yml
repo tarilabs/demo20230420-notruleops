@@ -22,6 +22,7 @@
               and
               event.resource.status.conditions is selectattr("message", "search", "exceeded quota")
             )
+      # confirmed different semantic not able to express that: DeploymentCondition(type == "Available", status == "False") and existential operator.
       throttle:
         once_within: 30 seconds
         group_by_attributes: []
