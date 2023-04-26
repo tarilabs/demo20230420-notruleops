@@ -1,0 +1,18 @@
+- name: empirico1
+  hosts: all
+  sources:
+    - ansible.eda.webhook:
+        host: 0.0.0.0
+        port: 5050 # use 5050 as on Mac OSX the 5000 is already reserved by default OS
+  rules:
+    - name: r1
+      # tried with source=generic not working at runtime: condition: event.resource.metadata.labels.app.kubernetes.io/name == "hello-pvdf"
+      # tried with source=generic not parsing: condition: event.resource.metadata.labels."app.kubernetes.io/name" == "hello-pvdf"
+      # tried with source=generic not parsing: condition: event.resource.metadata.labels.["app.kubernetes.io/name"] == "hello-pvdf"
+      # tried with source=webhook not working at runtime: event.payload.metadata.labels.app.kubernetes.io/name == "hello-pvdf"
+      # tried with source=webhook not parsing: event.payload.metadata.labels."app.kubernetes.io/name" == "hello-pvdf"
+      # tried with source=webhook not parsing: event.payload.metadata.labels.["app.kubernetes.io/name"] == "hello-pvdf"
+      condition: event.payload.metadata.name == "hello-pvdf"
+      action:
+        debug:
+          msg: "Received: {{ event.payload.metadata.uid }}"

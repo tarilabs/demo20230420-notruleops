@@ -36,6 +36,15 @@ kubectl apply -f k8s/pv-claim.yml && kubectl apply -f k8s/pvc-deployment.yml
 kubectl delete -f k8s/pv-claim.yml && kubectl delete -f k8s/pvc-deployment.yml
 ```
 
+# Fix the Service selector matches Pod name, but other selectors don't
+
+NOTE: wip
+
+```sh
+kubectl apply -f k8s/hello-pvdf-service.yml && kubectl apply -f k8s/hello-pvdf-diffVersionPod.yml 
+kubectl delete -f k8s/hello-pvdf-service.yml && kubectl delete -f k8s/hello-pvdf-diffVersionPod.yml 
+```
+
 # Investigation "limitations" found
 
 - No way to trigger a level-trigger update (manually trigger k8s API invocation for the specified resources)
@@ -137,4 +146,21 @@ but in rulebook format is not grouped "for the same Object in collection"
 - the `event.resource.status.conditions is selectattr("type", "==", "Available")` is not Drools indexed, because of using the `selectattr`.
 - the dot accessor in `selectattr` is allegedly not working as intended _even when hardcoding the right operand_.<br/>
 see screenshot: ![](Screenshot%202023-04-26%20at%2014.08.03.png)
+- the example in the doc is invalid YAML because incorrectly indented https://ansible-rulebook.readthedocs.io/en/stable/conditions.html#multiple-conditions-where-all-of-them-have-to-match-with-internal-references
+- as above, but the `generic` source is not defined in the base install ? :/ <br/> very similar to https://github.com/ansible/event-driven-ansible/issues/102#issuecomment-1499027720
+- custom "operators" are not supported, see the case of the need for a ~ `Map.containsAll( ... )`
+- accessing map with dot in fields (K9s use-case) is not supported; maybe missing an escape?<br/>Tried with the below:
+```
+      # tried with source=generic not working at runtime: condition: event.resource.metadata.labels.app.kubernetes.io/name == "hello-pvdf"
+      # tried with source=generic not parsing: condition: event.resource.metadata.labels."app.kubernetes.io/name" == "hello-pvdf"
+      # tried with source=generic not parsing: condition: event.resource.metadata.labels.["app.kubernetes.io/name"] == "hello-pvdf"
+      # tried with source=webhook not working at runtime: event.payload.metadata.labels.app.kubernetes.io/name == "hello-pvdf"
+      # tried with source=webhook not parsing: event.payload.metadata.labels."app.kubernetes.io/name" == "hello-pvdf"
+      # tried with source=webhook not parsing: event.payload.metadata.labels.["app.kubernetes.io/name"] == "hello-pvdf"
+```
+
+as demonstrated by the screenshot, trying first with `generic` source then `webhook` source:
+
+![](Screenshot%202023-04-26%20at%2018.07.28.png)
+
 - (to be continued...)
