@@ -1,6 +1,20 @@
 - name: empirico1
   hosts: all
   sources:
+    # not available in latest v1.3.3 :( see also https://github.com/ansible/ansible-rulebook/issues/494
+    # - ansible.eda.generic:
+    #     payload:
+    #       - kind: Pod
+    #         apiVersion: v1
+    #         metadata:
+    #           name: hello-pvdf
+    #           namespace: default
+    #           uid: 6cd445f4-227d-4e81-957f-88ab08ee0a6c
+    #           resourceVersion: '35203'
+    #           creationTimestamp: '2023-04-26T14:50:54Z'
+    #           labels:
+    #             app.kubernetes.io/name: hello-pvdf
+    #             app.kubernetes.io/version: 1.47-SNAPSHOT
     - ansible.eda.webhook:
         host: 0.0.0.0
         port: 5050 # use 5050 as on Mac OSX the 5000 is already reserved by default OS
