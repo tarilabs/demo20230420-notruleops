@@ -1,0 +1,40 @@
+- name: demo1
+  hosts: all
+  sources:
+    - mockup.agentoncluster:
+        when: 
+          - given: PersistentVolumeClaim
+            as: $pvc
+            having:
+            - status.phase == "Pending"
+          - given: Pod
+            as: $pod
+            having:
+            - status.phase == "Pending"
+          - given: Volume
+            having:
+            - persistentVolumeClaim!.claimName == $pvc.metadata.name
+            from: $pod.spec.volumes
+        then:
+          emit:
+            NeedPV:
+              size: $pvc.spec.resources.requests.storage
+  rules:
+    - name: Need PV of normal size
+      condition:
+        type: DRL
+        when: 
+          - given: NeedPV
+            having:
+              - size < 10
+      action:
+        debug:
+    - name: Need PV of bigger size
+      condition:
+        type: DRL
+        when: 
+          - given: NeedPV
+            having:
+              - size >= 10
+      action:
+        debug:

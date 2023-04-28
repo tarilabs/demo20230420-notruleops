@@ -1,0 +1,37 @@
+- name: demo1
+  hosts: all
+  sources:
+    - sabre1041.eda.k8s:
+        api_version: v1
+        kind: PersistentVolumeClaim
+        namespace: default
+    - sabre1041.eda.k8s:
+        api_version: v1
+        kind: Pod
+        namespace: default
+  rules:
+    - name: Fix the PersistentVolumeClaim Pod PENDING
+      condition:
+        type: DRL
+        when: 
+          - given: PersistentVolumeClaim
+            as: $pvc
+            having:
+            - status.phase == "Pending"
+          - given: Pod
+            as: $pod
+            having:
+            - status.phase == "Pending"
+          - given: Volume
+            having:
+            - persistentVolumeClaim!.claimName == $pvc.metadata.name
+            from: $pod.spec.volumes
+      action:
+        debug:
+          msg:
+            - BEGIN *** Fix the PersistentVolumeClaim Pod PENDING ***
+            - pvc
+            - "{{ events.pvc }}"
+            - pod
+            - "{{ events.pod }}"
+            - END
