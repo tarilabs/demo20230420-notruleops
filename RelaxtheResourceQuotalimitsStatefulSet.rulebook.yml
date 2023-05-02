@@ -1,0 +1,39 @@
+- name: demo1
+  hosts: all
+  sources:
+    - sabre1041.eda.k8s:
+        api_version: v1
+        kind: Event
+        namespace: default
+    - sabre1041.eda.k8s:
+        api_version: v1
+        kind: StatefulSet
+        namespace: default
+  rules:
+    - name: Relax the ResourceQuota limits StatefulSet
+      condition:
+        all:
+          - |
+            events.s << (
+              (event.type == "ADDED" or event.type == "MODIFIED")
+              and
+              event.resource.kind == "StatefulSet"
+              and
+              event.resource.spec.replicas != event.resource.status.replicas
+            )
+          - |
+            events.kevent << (
+              (event.type == "ADDED" or event.type == "MODIFIED")
+              and
+              event.resource.kind == "Event"
+              and
+              event.resource.involvedObject.uid == events.s.resource.metadata.uid
+              and
+              event.resource.message is search("exceeded quota") 
+            )
+      action:
+        debug:
+          msg:
+            - BEGIN *** Logging ***
+            - "{{ events.kevent }}"
+            - END

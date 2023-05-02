@@ -4,6 +4,7 @@
 ```
 ansible-galaxy collection install sabre1041.eda
 pip install requests
+pip install kubernetes
 ```
 
 # Demo environment
