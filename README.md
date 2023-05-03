@@ -150,7 +150,7 @@ see screenshot: ![](Screenshot%202023-04-26%20at%2014.08.03.png)
 - the example in the doc is invalid YAML because incorrectly indented https://ansible-rulebook.readthedocs.io/en/stable/conditions.html#multiple-conditions-where-all-of-them-have-to-match-with-internal-references
 - as above, but the `generic` source is not defined in the base install ? :/ <br/> very similar to https://github.com/ansible/event-driven-ansible/issues/102#issuecomment-1499027720
 - custom "operators" are not supported, see the case of the need for a ~ `Map.containsAll( ... )`
-- accessing map with dot in fields (K9s use-case) is not supported; maybe missing an escape?<br/>Tried with the below:
+- accessing map with dot in fields (K8s use-case) is not supported; maybe missing an escape?<br/>Tried with the below:
 ```
       # tried with source=generic not working at runtime: condition: event.resource.metadata.labels.app.kubernetes.io/name == "hello-pvdf"
       # tried with source=generic not parsing: condition: event.resource.metadata.labels."app.kubernetes.io/name" == "hello-pvdf"
