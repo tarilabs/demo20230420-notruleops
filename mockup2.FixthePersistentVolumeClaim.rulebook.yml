@@ -21,12 +21,7 @@
               size: $pvc.spec.resources.requests.storage
   rules:
     - name: Need PV of normal size
-      condition:
-        type: DRL
-        when: 
-          - given: NeedPV
-            having:
-              - size < 10
+      condition: event.type == "NeedPV" && event.payload.size < 10
       action:
         debug:
     - name: Need PV of bigger size
